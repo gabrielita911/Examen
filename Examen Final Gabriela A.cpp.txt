@@ -1,0 +1,152 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Viajero {
+    int id;
+    string nombre;
+    string direccion;
+    string nacionalidad;
+    string pasaporte;
+};
+
+struct Registro {
+    int idViajero;
+    string fecha;
+    string lugar;
+    string tipo;  // Para que sepa esto es el tipo ya sea Ingreso o Salida
+};
+
+
+const int MAX_VIAJEROS = 100;
+const int MAX_REGISTROS = 200;
+
+
+Viajero viajeros[MAX_VIAJEROS];
+Registro registros[MAX_REGISTROS];
+
+
+int contadorViajeros = 0;
+int contadorRegistros = 0;
+
+
+void agregarViajero() {
+    if (contadorViajeros < MAX_VIAJEROS) {
+        Viajero v;
+        v.id = contadorViajeros + 1;
+        cout << "Ingrese el nombre del viajero: ";
+        cin.ignore();
+        getline(cin, v.nombre);
+        cout << "Ingrese la direccion del viajero: ";
+        getline(cin, v.direccion);
+        cout << "Ingrese la nacionalidad del viajero: ";
+        getline(cin, v.nacionalidad);
+        cout << "Ingrese el numero de pasaporte del viajero: ";
+        getline(cin, v.pasaporte);
+
+        viajeros[contadorViajeros++] = v;
+        cout << "Viajero agregado exitosamente!\n";
+    } else {
+        cout << "No se pueden agregar más viajeros.\n";
+    }
+}
+
+void registrarMovimiento() {
+    if (contadorRegistros < MAX_REGISTROS) {
+        Registro r;
+        cout << "Ingrese el ID del viajero: ";
+        cin >> r.idViajero;
+        if (r.idViajero > 0 && r.idViajero <= contadorViajeros) {
+            cout << "Ingrese la fecha (DD/MM/AAAA): ";
+            cin.ignore();
+            getline(cin, r.fecha);
+            cout << "Ingrese el lugar de " << (r.tipo == "Ingreso" ? "Ingreso" : "Salida") << ": ";
+            getline(cin, r.lugar);
+            cout << "Es un Ingreso o Salida? (Ingreso/Salida): ";
+            getline(cin, r.tipo);
+
+            registros[contadorRegistros++] = r;
+            cout << "Registro guardado exitosamente!\n";
+        } else {
+            cout << "ID de viajero invalido.\n";
+        }
+    } else {
+        cout << "No se pueden agregar mas registros.\n";
+    }
+}
+
+void consultarViajero() {
+    int id;
+    cout << "Ingrese el ID del viajero: ";
+    cin >> id;
+    if (id > 0 && id <= contadorViajeros) {
+        Viajero v = viajeros[id - 1];
+        cout << "Nombre: " << v.nombre << "\n";
+        cout << "Direccion: " << v.direccion << "\n";
+        cout << "Nacionalidad: " << v.nacionalidad << "\n";
+        cout << "Pasaporte: " << v.pasaporte << "\n";
+    } else {
+        cout << "ID de viajero invalido.\n";
+    }
+}
+
+void borrarViajero() {
+    int id;
+    cout << "Ingrese el ID del viajero que desea borrar: ";
+    cin >> id;
+    if (id > 0 && id <= contadorViajeros) {
+        viajeros[id - 1] = Viajero();  // Reinicia la estructura.
+        cout << "Viajero borrado exitosamente!\n";
+    } else {
+        cout << "ID de viajero invalido.\n";
+    }
+}
+
+void generarReporte() {
+    cout << "Lista de Viajeros:\n";
+    for (int i = 0; i < contadorViajeros; ++i) {
+        if (!viajeros[i].nombre.empty()) {  // Ignora los borrados.
+            cout << "ID: " << viajeros[i].id << " - " << viajeros[i].nombre << "\n";
+        }
+    }
+    cout << "\nLista de Registros:\n";
+    for (int i = 0; i < contadorRegistros; ++i) {
+        cout << "ID Viajero: " << registros[i].idViajero 
+             << " - Fecha: " << registros[i].fecha 
+             << " - Lugar: " << registros[i].lugar 
+             << " - Tipo: " << registros[i].tipo << "\n";
+    }
+}
+
+
+void mostrarMenu() {
+    int opcion;
+    do {
+        cout << "\nMenu Principal:\n";
+        cout << "1. Agregar Viajero\n";
+        cout << "2. Registrar Ingreso/Salida\n";
+        cout << "3. Consultar Viajero\n";
+        cout << "4. Borrar Viajero\n";
+        cout << "5. Generar Reporte\n";
+        cout << "6. Salir\n";
+        cout << "Seleccione una opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+            case 1: agregarViajero(); break;
+            case 2: registrarMovimiento(); break;
+            case 3: consultarViajero(); break;
+            case 4: borrarViajero(); break;
+            case 5: generarReporte(); break;
+            case 6: cout << "Saliendo del sistema...\n"; break;
+            default: cout << "Opcion no valida!\n"; break;
+        }
+    } while (opcion != 6);
+}
+
+
+int main() {
+    mostrarMenu();
+    return 0;
+}
+
